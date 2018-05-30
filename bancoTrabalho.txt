@@ -1,0 +1,16 @@
+CREATE DATABASE `trabalho`;
+
+USE `trabalho`;
+
+CREATE TABLE `receitas` (
+
+`id` int NOT NULL AUTO_INCREMENT,
+`receita` varchar(45),
+`fr` int(11),
+`descricao` text,
+`orcada` double,
+`atualizada` double,
+`arrecada_mes` double,
+`arrecada_exercicio` double,
+PRIMARY KEY (`id`)
+) ;
