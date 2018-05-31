@@ -14,3 +14,6 @@ CREATE TABLE `receitas` (
 `arrecada_exercicio`float(16,2),
 PRIMARY KEY (`id`)
 ) ;
+
+
+INSERT INTO `receitas` (`id`, `receita`, `fr`, `descricao`, `orcada`, `atualizada`, `arrecada_mes`, `arrecada_exercicio`) VALUES (NULL, 'teste', '22', 'teste', '22', '23', '24', '25');
