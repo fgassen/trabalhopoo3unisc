@@ -6,7 +6,7 @@ CREATE TABLE `receitas` (
 
 `id` int NOT NULL AUTO_INCREMENT,
 `receita` varchar(45),
-`fr` int(11),
+`fr` varchar(10),
 `descricao` text,
 `orcada` double,
 `atualizada` double,
