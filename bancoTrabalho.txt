@@ -8,9 +8,9 @@ CREATE TABLE `receitas` (
 `receita` varchar(45),
 `fr` varchar(10),
 `descricao` text,
-`orcada` double,
-`atualizada` double,
-`arrecada_mes` double,
-`arrecada_exercicio` double,
+`orcada` float(16,2),
+`atualizada` float(16,2),
+`arrecada_mes` float(16,2),
+`arrecada_exercicio`float(16,2),
 PRIMARY KEY (`id`)
 ) ;
