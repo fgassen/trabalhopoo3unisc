@@ -8,4 +8,4 @@ postadas.
 
 LINK de acesso GIT = https://github.com/fgassen/trabalhopoo3unisc.git
 
-Desenvolvido por Felipe Gassen, Rodrigo Alves da Silveira, Thaina.
+Desenvolvido por Felipe Gassen, Rodrigo Alves da Silveira, Thaina Garcia.
