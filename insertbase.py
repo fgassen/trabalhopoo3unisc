@@ -14,7 +14,7 @@ for linha in conteudo:
 	if dado[2] == "" :
 		dado[2] = "NULL"
 	insert = insert
-		+""+dado[0]+
+		+","+dado[0]+
 		","+dado[1]+
 		","+dado[2]+
 		","+dado[3]+"."+dado[4]+
