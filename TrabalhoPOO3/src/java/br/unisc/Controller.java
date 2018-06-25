@@ -6,7 +6,6 @@
 package br.unisc;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.servlet.ServletException;
@@ -26,6 +25,8 @@ public class Controller extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        
+        request.getRequestDispatcher("test.jsp").forward(request, response);
     }
 
     @Override
@@ -33,15 +34,12 @@ public class Controller extends HttpServlet {
             throws ServletException, IOException {
         
         try {
-            Post post = new Post();
-            
-            post.sendMessage();
-            
+            Message message = new Message();
+            //post.sendMessage();
+            message.showSendMessage();
         } catch (TwitterException ex) {
             Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
+        request.getRequestDispatcher("index.jsp").forward(request, response);
     }
-
-    
 }

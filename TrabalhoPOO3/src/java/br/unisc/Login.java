@@ -23,18 +23,15 @@ public class Login {
         
         configBuilder = new ConfigurationBuilder();
         configBuilder.setDebugEnabled(true);        
-        configBuilder.setOAuthConsumerKey("eSmA9DXpTpVjkIUoKvVGYLawW");
-        configBuilder.setOAuthConsumerSecret("XMzcixGlXNWE2RsXKBCvZQ3G9rj3Jn9OGOrlFEEs6RwOXFcKaD");
-        configBuilder.setOAuthAccessToken("1001591854650019841-SxiA4N8z7QjdEI6RoDCTjY7jwghaU3");
-        configBuilder.setOAuthAccessTokenSecret("spQcYUCzStBzuQXOkS4nhaL0ODYj964jEe1t1pS233Vxb");
+        configBuilder.setOAuthConsumerKey("BF9DBxZeT3EqUQKS4SzwDSXeF");
+        configBuilder.setOAuthConsumerSecret("3jw6k1AvkLz0Qk7zLnUmMf3JGTmOjWfPgQmnnpxWIctMw5YEsT");
+        configBuilder.setOAuthAccessToken("1001591854650019841-l6xPmV9s3xACCUaIaHpYPFGuA9Nc93");
+        configBuilder.setOAuthAccessTokenSecret("eAJTuzDnWl9jkonQeATsJbLBt7PgXS3nksA5wMcG4D4Bw");
 
         //use the ConfigBuilder.build() method and pass the result to the TwitterFactory
         TwitterFactory tf = new TwitterFactory(configBuilder.build());
         //you can now get authenticated instance of Twitter object.
-        twitter = tf.getInstance();
-        
-              
-        
+        twitter = tf.getInstance();  
     }
 
     public Twitter getTwitter() {

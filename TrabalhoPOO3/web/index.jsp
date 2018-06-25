@@ -15,13 +15,11 @@
 
       <br> <br>
       
-      <h1> BEM VINDO</h1>
+      <form method="post" action="Controller">
+          <button type="submit" class="btn btn-primary">Submit</button>
+      </form>
       
-      <h2> Este projeto tem como objetivo realizar 
-          via Servlet’s a consulta em uma base 
-          de dados pública a partir de 
-          postagens no Twitter.
-      </h2>
+      
       
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
