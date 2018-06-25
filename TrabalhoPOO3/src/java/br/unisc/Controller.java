@@ -33,13 +33,7 @@ public class Controller extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         
-        try {
-            Message message = new Message();
-            //post.sendMessage();
-            message.showSendMessage();
-        } catch (TwitterException ex) {
-            Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        request.getRequestDispatcher("index.jsp").forward(request, response);
+        Message message =  new Message();
+        message.showTwittersMe();   
     }
 }
