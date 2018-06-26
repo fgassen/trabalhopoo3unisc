@@ -34,6 +34,8 @@ public class Controller extends HttpServlet {
             throws ServletException, IOException {
         
         Message message =  new Message();
-        message.showTwittersMe();   
+        message.receivetweets();
+        
+        request.getRequestDispatcher("index.jsp").forward(request, response);
     }
 }

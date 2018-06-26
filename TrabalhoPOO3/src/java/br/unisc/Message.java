@@ -8,6 +8,8 @@ package br.unisc;
 import java.util.List;
 import twitter4j.DirectMessage;
 import twitter4j.Paging;
+import twitter4j.Query;
+import twitter4j.QueryResult;
 import twitter4j.Status;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
@@ -21,12 +23,49 @@ import twitter4j.conf.ConfigurationBuilder;
 public class Message {
     
     Twitter twitter;
-     
+    List<Status> tweets;
+    int current;
+    boolean condition;
+    
     public Message(){
         twitter = new Login().getTwitter();
+        current = 0;
+        condition = true;
     }
       
-    void sendMessage() throws TwitterException{ 
+    void receivetweets(){
+        try {
+           Query query = new Query("@Poo3Trabalho");
+           QueryResult result = twitter.search(query);
+           tweets = result.getTweets();
+           for (Status tweet : tweets) {
+               System.out.println("User:"+tweet.getUser()+" "+tweet.getText());
+           }
+        }catch(TwitterException te){
+            System.out.println("Failed to search tweets: " + te.getMessage());
+        }
+    } 
+    
+    public void showTwittersMe(){
+        try {
+            Paging paging = new Paging(1);
+            List<Status> messages;
+            do {
+                messages = twitter.getRetweetsOfMe(paging);
+                for (Status message : messages) {
+                    System.out.println(message.toString());
+                }
+                paging.setPage(paging.getPage() + 1);
+            } while (messages.size() > 0 && paging.getPage() < 10);
+            System.out.println("done.");
+        } catch (TwitterException te) {
+            te.printStackTrace();
+            System.out.println("Failed to get messages: " + te.getMessage());
+        }
+        
+    }
+    
+    void sendDirectMessage() throws TwitterException{ 
         //message = ((DirectMessagesResources) twitter).sendDirectMessage(string, string1)
         //Status status = twitter.updateStatus(latestStatus);
         try {
@@ -38,13 +77,14 @@ public class Message {
         }
     }
     
-    
-    void showMessage(){
-
-        try {  
-            DirectMessage message = twitter.showDirectMessage(Long.parseLong(""));
-            System.out.println("From: @" + message.getSenderScreenName() + " id:" + message.getId() + " - "
+    void showDirectMessage(){
+        try {
+            Paging paging = new Paging(1);
+            List<DirectMessage> messages = twitter.getDirectMessages(paging);
+            for (DirectMessage message : messages) {
+                System.out.println("From: @" + message.getSenderScreenName() + " id:" + message.getId() + " - "
                     + message.getText());
+            }
         } catch (TwitterException te) {
             te.printStackTrace();
             System.out.println("Failed to get message: " + te.getMessage());
@@ -52,7 +92,7 @@ public class Message {
 
     }
     
-    void showSendMessage(){
+    void showDirectSendMessage(){
 
          try {
             Paging paging = new Paging(1);
@@ -72,7 +112,7 @@ public class Message {
         }
     }
     
-    void receiveMessage() throws TwitterException{ 
+    void receiveDirectMessage() throws TwitterException{ 
         
         try {
             Paging paging = new Paging(1);
@@ -92,7 +132,7 @@ public class Message {
         }
     } 
     
-     public void test()  {
+    public void test()  {
     
         try {
             twitter.updateStatus("Testado um twitter APP v2");
@@ -101,24 +141,21 @@ public class Message {
         }
         
     }
-     
-     
-    public void showTwittersMe(){
-        try {
-            Paging paging = new Paging(1);
-            List<Status> messages;
-            do {
-                messages = twitter.getRetweetsOfMe(paging);
-                for (Status message : messages) {
-                    System.out.println(message.toString());
-                }
-                paging.setPage(paging.getPage() + 1);
-            } while (messages.size() > 0 && paging.getPage() < 10);
-            System.out.println("done.");
-        } catch (TwitterException te) {
-            te.printStackTrace();
-            System.out.println("Failed to get messages: " + te.getMessage());
+    
+    
+    void refreshTweets(){
+        int counter = 0;
+        while (condition){
+            if(counter == 300000){
+                receivetweets();
+                System.out.println("Updated Tweets");
+            }
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                System.out.println(e);
+            }
         }
-        
     }
+    
 }
