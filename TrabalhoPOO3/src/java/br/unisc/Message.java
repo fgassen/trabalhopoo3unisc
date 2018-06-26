@@ -5,7 +5,10 @@
  */
 package br.unisc;
 
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import twitter4j.DirectMessage;
 import twitter4j.Paging;
 import twitter4j.Query;
@@ -23,6 +26,7 @@ import twitter4j.conf.ConfigurationBuilder;
  */
 public class Message {
     
+    Date lastreply;
     Twitter twitter;
     List<Status> tweets;
     int current;
@@ -32,6 +36,7 @@ public class Message {
         twitter = new Login().getTwitter();
         current = 0;
         condition = true;
+        lastreply  = new Date(1, 12, 1999);
     }
       
     void receivetweets(){
@@ -40,9 +45,10 @@ public class Message {
            QueryResult result = twitter.search(query);
            tweets = result.getTweets();
            for (Status tweet : tweets) {
-               System.out.println("User:"+tweet.getUser().getId()+" "+tweet.getText());
+               System.out.println("User:"+tweet.getUser().getId()+" "+tweet.getText()+" Reply : "+tweet.getCreatedAt());
            }
-            replyTo(tweets);
+           replyTo(tweets);
+           
         }catch(TwitterException te){
             System.out.println("Failed to search tweets: " + te.getMessage());
         }
@@ -50,18 +56,34 @@ public class Message {
     
     public void replyTo(List<Status> tweets) {
         Status reply = null;
+        Date aux = lastreply;
         for (Status tweet : tweets) {
-            try {
-                reply = twitter.updateStatus(new StatusUpdate("@" + tweet.getUser().getScreenName() + " this is a reply to your tweet.").inReplyToStatusId(tweet.getId()));
-                System.out.println("Posted reply " + reply.getId() + " in response to tweet " + reply.getInReplyToStatusId());
-            } catch (TwitterException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            } 
+            
+            if(lastreply.before(tweet.getCreatedAt())){
+                try {
+                    reply = twitter.updateStatus(new StatusUpdate("@" + tweet.getUser().getScreenName() + " this is a reply to your tweet.").inReplyToStatusId(tweet.getId()));
+                    System.out.println("Posted reply " + reply.getId() + " in response to tweet " + reply.getInReplyToStatusId());
+                    
+                    if(aux.before(tweet.getCreatedAt())){
+                        aux = tweet.getCreatedAt();
+                    }
+                    
+                } catch (TwitterException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                } 
+            }
         }
+        
+        if(aux.after(lastreply)){
+            lastreply = aux;
+        }
+        System.out.println(lastreply.toString());
     }
     
-    
+    boolean isReply(Status tweet){
+        return tweet.getCreatedAt().after(lastreply);
+    }
     
     public void showTwittersMe(){
         try {
@@ -79,7 +101,6 @@ public class Message {
             te.printStackTrace();
             System.out.println("Failed to get messages: " + te.getMessage());
         }
-        
     }
     
     void sendDirectMessage() throws TwitterException{ 
