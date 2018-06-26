@@ -85,6 +85,17 @@ public class Message {
         return tweet.getCreatedAt().after(lastreply);
     }
     
+    
+    private String reply(String question){
+        DAO dao = new DAO();
+        List<String> list = dao.getListAnwser(question);
+        if(list.size()>1){
+            return null;
+        }else{
+            return list.get(0);
+        }
+    }
+    
     public void showTwittersMe(){
         try {
             Paging paging = new Paging(1);
