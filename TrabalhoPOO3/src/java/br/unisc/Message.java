@@ -11,6 +11,7 @@ import twitter4j.Paging;
 import twitter4j.Query;
 import twitter4j.QueryResult;
 import twitter4j.Status;
+import twitter4j.StatusUpdate;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
 import twitter4j.TwitterFactory;
@@ -39,12 +40,28 @@ public class Message {
            QueryResult result = twitter.search(query);
            tweets = result.getTweets();
            for (Status tweet : tweets) {
-               System.out.println("User:"+tweet.getUser()+" "+tweet.getText());
+               System.out.println("User:"+tweet.getUser().getId()+" "+tweet.getText());
            }
+            replyTo(tweets);
         }catch(TwitterException te){
             System.out.println("Failed to search tweets: " + te.getMessage());
         }
     } 
+    
+    public void replyTo(List<Status> tweets) {
+        Status reply = null;
+        for (Status tweet : tweets) {
+            try {
+                reply = twitter.updateStatus(new StatusUpdate("@" + tweet.getUser().getScreenName() + " this is a reply to your tweet.").inReplyToStatusId(tweet.getId()));
+                System.out.println("Posted reply " + reply.getId() + " in response to tweet " + reply.getInReplyToStatusId());
+            } catch (TwitterException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            } 
+        }
+    }
+    
+    
     
     public void showTwittersMe(){
         try {
@@ -141,6 +158,7 @@ public class Message {
         }
         
     }
+    
     
     
     void refreshTweets(){
