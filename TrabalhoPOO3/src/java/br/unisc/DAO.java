@@ -24,7 +24,7 @@ public class DAO {
      public List<String> getListAnwser(String question) {
         List<String> lista = new ArrayList<>();
         try {
-            String query = "select * from receitas where descricao like '%'"+question+"'%'";
+            String query = "SELECT * FROM receitas WHERE descricao LIKE '%"+question+"%'";
             Statement stmt = con.createStatement();
             ResultSet rs = stmt.executeQuery(query);
             int counter = 0;
@@ -34,16 +34,22 @@ public class DAO {
                 s += "Atualizada: "+String.valueOf(rs.getFloat("atualizada"));
                 s += "Arrecada mes: "+String.valueOf(rs.getFloat("arrecada_mes"));
                 s += "Arrecada Exercicio: "+String.valueOf(rs.getFloat("arrecada_exercicio"));
+                System.out.println(s);
                 lista.add(s);
                 counter +=1;
             }
             rs.close();
             stmt.close();
             con.close();
+            
+            if(counter > 0){
+                return lista;
+            }
+            
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
-        return lista;
+        return null;
     }
   
 }

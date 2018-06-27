@@ -17,9 +17,6 @@ import twitter4j.Status;
 import twitter4j.StatusUpdate;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
-import twitter4j.TwitterFactory;
-import twitter4j.api.DirectMessagesResources;
-import twitter4j.conf.ConfigurationBuilder;
 /**
  *
  * @author root
@@ -36,49 +33,57 @@ public class Message {
         twitter = new Login().getTwitter();
         current = 0;
         condition = true;
-        lastreply  = new Date(1, 12, 1999);
+        lastreply  = new Date(2018, 06, 26, 20, 47);
     }
       
     void receivetweets(){
+        
         try {
            Query query = new Query("@Poo3Trabalho");
            QueryResult result = twitter.search(query);
            tweets = result.getTweets();
-           for (Status tweet : tweets) {
+           boolean out = true;
+           int counter = 0; 
+           Date auxdate = lastreply;
+           do {
+                out = replyTo(tweets.get(counter));
+                
+                if(auxdate.before(tweets.get(counter).getCreatedAt())){
+                    auxdate = tweets.get(counter).getCreatedAt();
+                }
+                
+           } while (tweets.size() > counter && out );
+
+            /*
+            for (Status tweet : tweets) {
                System.out.println("User:"+tweet.getUser().getId()+" "+tweet.getText()+" Reply : "+tweet.getCreatedAt());
-           }
-           replyTo(tweets);
+            }
+             */
+            
+            lastreply = auxdate;
            
         }catch(TwitterException te){
             System.out.println("Failed to search tweets: " + te.getMessage());
         }
     } 
     
-    public void replyTo(List<Status> tweets) {
+    public boolean replyTo(Status tweet) {
         Status reply = null;
         Date aux = lastreply;
-        for (Status tweet : tweets) {
-            
-            if(lastreply.before(tweet.getCreatedAt())){
-                try {
-                    reply = twitter.updateStatus(new StatusUpdate("@" + tweet.getUser().getScreenName() + " this is a reply to your tweet.").inReplyToStatusId(tweet.getId()));
-                    System.out.println("Posted reply " + reply.getId() + " in response to tweet " + reply.getInReplyToStatusId());
-                    
-                    if(aux.before(tweet.getCreatedAt())){
-                        aux = tweet.getCreatedAt();
-                    }
-                    
-                } catch (TwitterException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                } 
-            }
+        if(lastreply.before(tweet.getCreatedAt())){
+            try {
+                System.out.println(tweet.getText());
+                String[] out = tweet.getText().split("@Poo3Trabalho");
+                //System.out.println(out[1]);
+                twitter.updateStatus(new StatusUpdate("@" + tweet.getUser().getScreenName() + reply(out[1]) ).inReplyToStatusId(tweet.getId()));
+                //System.out.println("Posted reply " + reply.getId() + " in response to tweet " + reply.getInReplyToStatusId());
+                return true;
+            } catch (TwitterException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }     
         }
-        
-        if(aux.after(lastreply)){
-            lastreply = aux;
-        }
-        System.out.println(lastreply.toString());
+        return false;
     }
     
     boolean isReply(Status tweet){
@@ -86,11 +91,11 @@ public class Message {
     }
     
     
-    private String reply(String question){
+    public String reply(String question){
         DAO dao = new DAO();
         List<String> list = dao.getListAnwser(question);
-        if(list.size()>1){
-            return null;
+        if(list == null){
+            return "Por favor detalhe mais informação solictada";
         }else{
             return list.get(0);
         }
@@ -191,17 +196,14 @@ public class Message {
         
     }
     
-    
-    
+   
     void refreshTweets(){
         int counter = 0;
         while (condition){
-            if(counter == 300000){
-                receivetweets();
-                System.out.println("Updated Tweets");
-            }
+            receivetweets();
+            System.out.println("Updated Tweets");
             try {
-                Thread.sleep(1000);
+                Thread.sleep(100000);
             } catch (InterruptedException e) {
                 System.out.println(e);
             }
